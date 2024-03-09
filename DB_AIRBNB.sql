@@ -1,0 +1,120 @@
+CREATE TABLE USERSAIRBNB (
+    idUser VARCHAR(255),
+    updated_at DATE,
+    created_at DATE,
+    email VARCHAR2(255),
+    passwordUser VARCHAR2(8),
+    first_name VARCHAR2(50),
+    last_name VARCHAR2(50)
+);
+
+CREATE TABLE AMENITY (
+    idAmenity VARCHAR(255),
+    updated_at DATE,
+    created_at DATE,
+    nameAmenity  VARCHAR2(100)
+);
+
+CREATE TABLE STATEAIRBNB (
+    idState VARCHAR(255),
+    updated_at DATE,
+    created_at DATE,
+    nameState VARCHAR2(100)
+);
+
+CREATE TABLE CITY (
+    idCity VARCHAR(255),
+    updated_at DATE,
+    created_at DATE,
+    state_id VARCHAR(255),
+    nameCity VARCHAR2(255)
+);
+
+
+CREATE TABLE PLACEAMENITY (
+    amenity_id VARCHAR(255),
+    place_id VARCHAR(255)
+);
+
+CREATE TABLE REVIEW (
+    idReview VARCHAR(255),
+    updated_at TIMESTAMP,
+    created_at TIMESTAMP,
+    user_id VARCHAR(255),
+    place_id VARCHAR(255),
+    coment VARCHAR2(255)
+);
+
+CREATE TABLE PLACE(
+    idPlace VARCHAR(255),
+    updated_at TIMESTAMP,
+    created_at TIMESTAMP,
+    user_id VARCHAR(255),
+    namePlace VARCHAR2(255),
+    city_id VARCHAR(255),
+    description VARCHAR2(255),
+    number_rooms NUMBER DEFAULT 0,
+    number_bathrooms NUMBER DEFAULT 0,
+    max_guest NUMBER DEFAULT 0,
+    price_by_night NUMBER DEFAULT 0,
+    latitude FLOAT,
+    longitude FLOAT
+);
+
+-- Agregar restricciones PRIMARY KEY
+
+-- USERSAIRBNB
+ALTER TABLE USERSAIRBNB ADD CONSTRAINT pk_users PRIMARY KEY (idUser);
+
+-- AMENITY
+ALTER TABLE AMENITY ADD CONSTRAINT pk_amenity PRIMARY KEY (idAmenity);
+
+-- STATEAIRBNB
+ALTER TABLE STATEAIRBNB ADD CONSTRAINT pk_state PRIMARY KEY (idState);
+
+-- CITY
+ALTER TABLE CITY ADD CONSTRAINT pk_city PRIMARY KEY (idCity);
+
+-- REVIEW
+ALTER TABLE REVIEW ADD CONSTRAINT pk_review PRIMARY KEY (idReview);
+
+-- PLACE
+ALTER TABLE PLACE ADD CONSTRAINT pk_place PRIMARY KEY (idPlace);
+
+ALTER TABLE PLACEAMENITY
+DROP CONSTRAINT pk_placeamenity;
+
+-- Agregar restricciones FOREIGN KEY
+
+-- CITY
+ALTER TABLE CITY ADD CONSTRAINT fk_city_state FOREIGN KEY (state_id) REFERENCES STATEAIRBNB(idState);
+
+-- PLACEAMENITY
+ALTER TABLE PLACEAMENITY ADD CONSTRAINT fk_placeamenity_amenity FOREIGN KEY (amenity_id) REFERENCES AMENITY(idAmenity);
+ALTER TABLE PLACEAMENITY ADD CONSTRAINT fk_placeamenity_place FOREIGN KEY (place_id) REFERENCES PLACE(idPlace);
+
+-- REVIEW
+ALTER TABLE REVIEW ADD CONSTRAINT fk_review_user FOREIGN KEY (user_id) REFERENCES USERSAIRBNB(idUser);
+ALTER TABLE REVIEW ADD CONSTRAINT fk_review_place FOREIGN KEY (place_id) REFERENCES PLACE(idPlace);
+
+-- PLACE
+ALTER TABLE PLACE ADD CONSTRAINT fk_place_user FOREIGN KEY (user_id) REFERENCES USERSAIRBNB(idUser);
+ALTER TABLE PLACE ADD CONSTRAINT fk_place_city FOREIGN KEY (city_id) REFERENCES CITY(idCity);
+
+
+-- Eliminar restricciones PRIMARY KEY
+ALTER TABLE USERSAIRBNB DROP CONSTRAINT pk_users;
+ALTER TABLE AMENITY DROP CONSTRAINT pk_amenity;
+ALTER TABLE STATEAIRBNB DROP CONSTRAINT pk_state;
+ALTER TABLE CITY DROP CONSTRAINT pk_city;
+ALTER TABLE REVIEW DROP CONSTRAINT pk_review;
+ALTER TABLE PLACE DROP CONSTRAINT pk_place;
+
+-- Eliminar tablas
+DROP TABLE USERSAIRBNB;
+DROP TABLE AMENITY;
+DROP TABLE STATEAIRBNB;
+DROP TABLE CITY;
+DROP TABLE PLACEAMENITY;
+DROP TABLE REVIEW;
+DROP TABLE PLACE;
